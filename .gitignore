@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+.env.*
+
+# Hardhat files
+cache/
+cache-zk/
+artifacts/
+artifacts-zk/
+typechain/
+typechain-types/
+
+# ZkSync deployment files
+deployments-zk/
+
+# IDE files
+.vscode/
+.idea/
+
+# Misc
+.DS_Store
+*.log
