@@ -2,14 +2,23 @@
 // Compatible with OpenZeppelin Contracts ^5.0.0
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 contract zkMessages {
     string[] private messages;
+    IERC20 public fidToken;
 
     // Event to acknowledge a new message
     event MessageReceived(string);
 
-    constructor() {
-        // Zeek initializes the contract with a welcome message
+    constructor(address _fidTokenAddress) {
+        // Validate the FidToken address
+        require(_fidTokenAddress != address(0), "Invalid FidToken address");
+        
+        // Set the FidToken contract
+        fidToken = IERC20(_fidTokenAddress);
+        
+        // Emit initial message
         emit MessageReceived("The second DeFi run for zkSync!");
     }
 

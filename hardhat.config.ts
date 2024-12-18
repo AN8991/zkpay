@@ -1,13 +1,14 @@
 require("dotenv").config();
-require("@matterlabs/hardhat-zksync-deploy");
-require("@matterlabs/hardhat-zksync-solc");
-require("@matterlabs/hardhat-zksync-verify");
 import { HardhatUserConfig, task } from "hardhat/config";
+import "@typechain/hardhat";
+import "@matterlabs/hardhat-zksync-deploy";
+import "@matterlabs/hardhat-zksync-solc";
+import "@matterlabs/hardhat-zksync-verify";
 
 // Add this task definition
 task("deploy", "Deploys the contracts", async (taskArgs, hre) => {
-  const { deploy } = require("./deploy/deploy.ts");
-  await deploy(hre);
+  const deployFn = require("./deploy/deploy");
+  await deployFn(hre);
 });
 
 // Verify that your .env file is being loaded correctly for the Private Key. 
@@ -16,12 +17,6 @@ if (!process.env.PRIVATE_KEY) {
 }
 
 const config: HardhatUserConfig = {
-  zksolc: {
-    version: "1.5.8",
-    compilerSource: "binary",
-    settings: {},
-  },
-  defaultNetwork: "zkSyncTestnet",
   networks: {
     hardhat: {
       zksync: true,
@@ -30,7 +25,6 @@ const config: HardhatUserConfig = {
       url: process.env.ZKSYNC_TESTNET,
       ethNetwork: "sepolia",
       zksync: true,
-      verifyURL: "https://sepolia.era.zksync.dev",
     },
   },
   solidity: {

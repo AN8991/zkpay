@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
-    "@openzeppelin/contracts": "^5.1.0",
+    "@openzeppelin/contracts": "4.6.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
@@ -18,7 +18,7 @@
     "prettier-plugin-solidity": "^1.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
-    "zksync-ethers": "^6.15.3",
+    "zksync-ethers": "^6.11.2",
     "zksync-web3": "^0.17.1"
   }
 }

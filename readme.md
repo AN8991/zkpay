@@ -34,25 +34,24 @@ npm install
 npm install
 ```
 
-3. Set up environment variables:
+3. Set up environment variables (This is for zksync testnet):
 PRIVATE_KEY=your_private_key_here
-ZKSYNC_TESTNET=your_zksync_testnet_url
+ZKSYNC_TESTNET=https://sepolia.era.zksync.dev
+
+4. Compile & Deploy the contract:
+
+# Compile the contracts
 ```bash
-cp .env.example .env
+npx hardhat compile
 ```
 
-4. Deploy the contract:
-
-# For FidToken contract
-```bash
-npx hardhat run scripts/deploy.ts --network zkSyncTestnet
-```
-# For zkMessages contract
-```bash
-npx hardhat run scripts/deploy-messages.ts --network zkSyncTestnet
-```
+# Deploy both the contracts
 ```bash
 npx hardhat deploy
+```
+OR
+```bash
+npx hardhat run deploy/deploy.ts --network zkSyncTestnet
 ```
 
 5. Verify the contract:
