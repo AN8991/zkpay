@@ -1,9 +1,10 @@
-require("dotenv").config();
 import { HardhatUserConfig, task } from "hardhat/config";
-import "@typechain/hardhat";
+import "@nomicfoundation/hardhat-toolbox";
+import "@matterlabs/hardhat-zksync-node";
 import "@matterlabs/hardhat-zksync-deploy";
 import "@matterlabs/hardhat-zksync-solc";
 import "@matterlabs/hardhat-zksync-verify";
+import "dotenv/config";
 
 // Add this task definition
 task("deploy", "Deploys the contracts", async (taskArgs, hre) => {
@@ -17,18 +18,50 @@ if (!process.env.PRIVATE_KEY) {
 }
 
 const config: HardhatUserConfig = {
+  defaultNetwork: "zkSyncTestnet",
+  
   networks: {
     hardhat: {
       zksync: true,
     },
     zkSyncTestnet: {
-      url: process.env.ZKSYNC_TESTNET,
+      url: process.env.ZKSYNC_TESTNET || "https://sepolia.era.zksync.dev",
       ethNetwork: "sepolia",
       zksync: true,
+      verifyURL: "https://sepolia-explorer.zksync.io/contract_verification",
+      chainId: 300,
+    },
+    zkSyncMainnet: {
+      url: process.env.ZKSYNC_MAINNET || "https://mainnet.era.zksync.io",
+      ethNetwork: "mainnet",
+      zksync: true,
+      verifyURL: "https://zksync-era.l2scan.co/contract_verification",
+      chainId: 324,
     },
   },
+
+  // Specify the Solidity compiler version
   solidity: {
     version: "0.8.20",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
+  },
+
+  // zkSync compiler configuration
+  zksolc: {
+    settings: {
+      libraries: {}, // Optional: external libraries
+    },
+  },
+
+  // TypeChain configuration
+  typechain: {
+    outDir: "typechain-types",
+    target: "ethers-v6",
   },
 };
 
