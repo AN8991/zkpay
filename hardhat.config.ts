@@ -63,6 +63,32 @@ const config: HardhatUserConfig = {
     outDir: "typechain-types",
     target: "ethers-v6",
   },
+
+  // Add ZKSync verification configuration
+  etherscan: {
+    apiKey: {
+      zkSyncTestnet: process.env.ZKSYNC_EXPLORER_API_KEY || "",
+      zkSyncMainnet: process.env.ZKSYNC_EXPLORER_API_KEY || "",
+    },
+    customChains: [
+      {
+        network: "zkSyncTestnet",
+        chainId: 300,
+        urls: {
+          apiURL: "https://sepolia-explorer.zksync.io/contract_verification",
+          browserURL: "https://sepolia.explorer.zksync.io"
+        }
+      },
+      {
+        network: "zkSyncMainnet",
+        chainId: 324,
+        urls: {
+          apiURL: "https://zksync-era.l2scan.co/contract_verification",
+          browserURL: "https://explorer.zksync.io"
+        }
+      }
+    ]
+  },
 };
 
 export default config;

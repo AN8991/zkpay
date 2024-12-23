@@ -7,8 +7,8 @@ import { log, clearLogFile } from "../utils/logger";
 import { handleMainError } from "../utils/error-handler";
 
 // Contract addresses
-const ZKMESSAGES_ADDRESS = "0xEe83D6b48300aad51b99Dd3730c1D23576904B68";
-const FIDTOKEN_ADDRESS = "0xBc16E541aD54cFA402902156d41855F4ecB80730";
+const ZKMESSAGES_ADDRESS = "0xB9Ae7Ab2Cce0862CbE5754D282F985De637Cf8F7";
+const FIDTOKEN_ADDRESS = "0xD2aAdCAEBcbd4C4E6451A4473731F8B26c3CDB63";
 const PAYMASTER_ADDRESS = "0x3cb2b87d10ac01736a65688f3e0fb1b070b3eea3";
 
 async function main() {

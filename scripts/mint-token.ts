@@ -8,7 +8,7 @@ import { log, clearLogFile } from "../utils/logger";
 import { handleMainError } from "../utils/error-handler";
 
 // Address of the ERC20 token contract
-const TOKEN_CONTRACT_ADDRESS = "0xBc16E541aD54cFA402902156d41855F4ecB80730";
+const TOKEN_CONTRACT_ADDRESS = "0xD2aAdCAEBcbd4C4E6451A4473731F8B26c3CDB63";
 // Wallet that will receive tokens
 const RECEIVER_WALLET = "0x91D7d1d7dAEB508Bc685fCb55B5bB6b9f5d97054";
 // Amount of tokens to mint in ETH format, e.g. 1.23

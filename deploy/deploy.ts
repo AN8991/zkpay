@@ -4,6 +4,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy";
 import * as fs from "fs";
 import * as path from "path";
+import * as childProcess from 'child_process';
 import dotenv from "dotenv";
 
 import { log, clearLogFile } from "../utils/logger";
@@ -81,7 +82,7 @@ async function deploy(hre: HardhatRuntimeEnvironment) {
 
     log('deploy', `FidToken was deployed to ${fidTokenAddress}`);
 
-    // Deploy zkMessages
+    // Load artifacts with zkMessages
     const zkMessagesArtifact = await deployer.loadArtifact("zkMessages");
     const zkMessagesFee = await deployer.estimateDeployFee(zkMessagesArtifact, [fidTokenAddress]);
 
@@ -106,11 +107,35 @@ async function deploy(hre: HardhatRuntimeEnvironment) {
       deployedAt: new Date().toISOString()
     };
 
+      // Auto update the mint-token.ts and paymaster-transaction.ts with latest contract addresses
+    try {
+      log('deploy', 'Running update addresses script...');
+      const updateAddressesOutput = childProcess.execSync('npx ts-node scripts/update-addresses.ts', { 
+        stdio: 'pipe',
+        cwd: path.join(__dirname, '..')
+      });
+      
+      // Log the output of the update addresses script
+      log('deploy', `Update Addresses Script Output:\n${updateAddressesOutput.toString().trim()}`);
+      log('deploy', 'Update addresses script executed successfully');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        log('error', `Failed to execute update addresses script: ${error.message}`);
+        
+        // Check if error has stderr property using type assertion
+        const errorWithStderr = error as { stderr?: { toString(): string } };
+        if (errorWithStderr.stderr) {
+          log('error', `Update Addresses Script Error Output:\n${errorWithStderr.stderr.toString().trim()}`);
+        }
+      } else {
+        log('error', `Failed to execute update addresses script: ${String(error)}`);
+      }
+    }
+
     // Run paymaster transaction script
-    const { execSync } = require('child_process');
     try {
       log('deploy', 'Running paymaster transaction script...');
-      const paymasterOutput = execSync('npx ts-node scripts/paymaster-transaction.ts', { 
+      const paymasterOutput = childProcess.execSync('npx ts-node scripts/paymaster-transaction.ts', { 
         stdio: 'pipe',
         cwd: path.join(__dirname, '..')
       });
