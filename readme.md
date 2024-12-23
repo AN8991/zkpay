@@ -5,13 +5,7 @@
 - npm or yarn
 
 ## Sepolia testnet network details
-
-Network Name: ZKsync Sepolia Testnet
-RPC URL: https://sepolia.era.zksync.dev
-Chain ID: 300
-Currency Symbol: ETH
-Block Explorer URL: https://sepolia.explorer.zksync.io
-WebSocket URL: wss://sepolia.era.zksync.dev/ws
+https://docs.zksync.io/zksync-era/environment
 
 ## Dependencies
 NOTE: 
