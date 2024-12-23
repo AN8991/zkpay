@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function updateContractAddresses(fidTokenAddress: string, zkMessagesAddress: string) {
+export function updateContractAddresses(fidTokenAddress: string, zkMessagesAddress: string, walletAddress: string) {
   const projectRoot = process.cwd();
 
   // Update mint-token.ts
@@ -26,5 +26,29 @@ export function updateContractAddresses(fidTokenAddress: string, zkMessagesAddre
   );
   fs.writeFileSync(paymasterTransactionPath, paymasterTransactionContent);
 
-  console.log('Contract addresses updated successfully');
+  // Update .env file with updated address during deployment
+  const envPath = path.join(projectRoot, '.env');
+  let envContent = fs.readFileSync(envPath, 'utf8');
+  
+  // Update Wallet Address
+  envContent = envContent.replace(
+    /WALLET_ADDRESS=.*(\s|$)/,
+    `WALLET_ADDRESS=${walletAddress}\n`
+  );
+    
+  // Update ZKMESSAGES_ADDRESS
+  envContent = envContent.replace(
+    /ZKMESSAGES_ADDRESS=.*(\s|$)/,
+    `ZKMESSAGES_ADDRESS=${zkMessagesAddress}\n`
+  );
+  
+  // Update FIDTOKEN_ADDRESS
+  envContent = envContent.replace(
+    /FIDTOKEN_ADDRESS=.*(\s|$)/,
+    `FIDTOKEN_ADDRESS=${fidTokenAddress}\n`
+  );
+  
+  fs.writeFileSync(envPath, envContent);
+
+  console.log('Contract addresses updated successfully in scripts and .env file');
 }
