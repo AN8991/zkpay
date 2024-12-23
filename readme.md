@@ -43,12 +43,12 @@ npx hardhat compile
 ```
 Output: You should see 3 new folders (artifacts, cache-zk, deployments-zk) being created
 
-# Update the contract addresses in the scripts
+4. Update the contract addresses in the scripts (This is automated - no need to actually run this step):
 ```bash
 npx ts-node scripts/update-addresses.ts
 ```
 
-4. Deploy the contracts
+5. Deploy the contracts
 ```bash
 npx hardhat deploy --network zkSyncTestnet
 ```
@@ -56,6 +56,8 @@ OR
 ```bash
 npx hardhat run deploy/deploy.ts --network zkSyncTestnet
 ```
+Output: There should be new log files created in the logs folder.
+
 # OPTIONAL
 How to perfrom contract verification:
 ```bash
