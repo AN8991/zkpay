@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { ethers } from 'ethers'
 
+// Import contract ABI
+import zkMessagesABI from '../../artifacts-zk/contracts/zkMessages.sol/zkMessages.json'
+
 // Define the props interface for type safety and clear component requirements
 interface TokenCreatorProps {
   // Ethers signer for contract deployment - can be null if not connected
@@ -17,6 +20,10 @@ export default function TokenCreator({ signer, addLog }: TokenCreatorProps) {
   const [symbol, setSymbol] = useState('')
   // Loading state to prevent multiple simultaneous deployments
   const [isCreating, setIsCreating] = useState(false)
+  // State to store FidToken address for zkMessages deployment
+  const [fidTokenAddress, setFidTokenAddress] = useState('')
+  // State to manage zkMessages deployment
+  const [isDeployingZkMessages, setIsDeployingZkMessages] = useState(false)
 
   // Async handler for token creation
   const handleCreate = async () => {
@@ -43,8 +50,14 @@ export default function TokenCreator({ signer, addLog }: TokenCreatorProps) {
       // Wait for contract to be fully deployed
       await token.deploymentTransaction()?.wait()
 
+      // Get the deployed token address
+      const deployedAddress = await token.getAddress()
+
       // Log successful token creation with details
-      addLog(`Token created: ${name} (${symbol}) at ${(token as any).address}`)
+      addLog(`Token created: ${name} (${symbol}) at ${deployedAddress}`)
+      
+      // Store the token address for zkMessages deployment
+      setFidTokenAddress(deployedAddress)
       
       // Reset form inputs after successful creation
       setName('')
@@ -56,6 +69,45 @@ export default function TokenCreator({ signer, addLog }: TokenCreatorProps) {
     } finally {
       // Ensure creating state is reset even if an error occurs
       setIsCreating(false)
+    }
+  }
+
+  // Async handler for zkMessages contract deployment
+  const handleDeployZkMessages = async () => {
+    // Validate inputs: ensure signer is available and FidToken address exists
+    if (!signer || !fidTokenAddress) {
+      addLog('Please create FidToken first')
+      return
+    }
+
+    // Set deploying state
+    setIsDeployingZkMessages(true)
+    try {
+      // Create contract factory for zkMessages
+      const ZkMessagesFactory = new ethers.ContractFactory(
+        zkMessagesABI.abi,
+        zkMessagesABI.bytecode,
+        signer
+      )
+
+      // Deploy zkMessages contract with FidToken address
+      const zkMessagesContract = await ZkMessagesFactory.deploy(fidTokenAddress)
+      
+      // Wait for contract to be fully deployed
+      await zkMessagesContract.deploymentTransaction()?.wait()
+
+      // Get the deployed address
+      const deployedAddress = await zkMessagesContract.getAddress()
+
+      // Log successful deployment
+      addLog(`zkMessages contract deployed at ${deployedAddress}`)
+    } catch (error) {
+      // Log and display any errors during deployment
+      console.error('Failed to deploy zkMessages:', error)
+      addLog('Failed to deploy zkMessages contract')
+    } finally {
+      // Reset deploying state
+      setIsDeployingZkMessages(false)
     }
   }
 
@@ -90,6 +142,24 @@ export default function TokenCreator({ signer, addLog }: TokenCreatorProps) {
         className="w-full bg-black text-white py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isCreating ? 'Creating...' : 'Create Token'}
+      </button>
+
+      {/* FidToken Address Input (auto-populated, read-only) */}
+      <input
+        type="text"
+        placeholder="FidToken Address"
+        value={fidTokenAddress}
+        readOnly
+        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100"
+      />
+
+      {/* Deploy zkMessages Contract Button */}
+      <button
+        onClick={handleDeployZkMessages}
+        disabled={isDeployingZkMessages || !fidTokenAddress}
+        className="w-full bg-black text-white py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isDeployingZkMessages ? 'Deploying...' : 'Deploy zkMessages'}
       </button>
     </div>
   )
