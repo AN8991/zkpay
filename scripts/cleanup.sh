@@ -13,7 +13,7 @@ print_status() {
 # Remove deployment details
 print_status "Removing deployment details..."
 rm -f w:/Projects/zkpay/deployment.json
-rm -f w:/Projects/zkpay/deployments-zk/*
+rm -rf w:/Projects/zkpay/deployments-zk/zkSyncTestnet
 
 # Clear log files
 print_status "Clearing log files..."
@@ -25,13 +25,14 @@ rm -rf w:/Projects/zkpay/artifacts-zk/*
 rm -rf w:/Projects/zkpay/cache-zk/*
 rm -rf w:/Projects/zkpay/typechain-types/*
 
+# Reset contract addresses in files
+print_status "Resetting contract addresses..."
+sed -i 's/const ZKMESSAGES_ADDRESS = ".*";/const ZKMESSAGES_ADDRESS = "";/' w:/Projects/zkpay/scripts/paymaster-transaction.ts
+sed -i 's/const FIDTOKEN_ADDRESS = ".*";/const FIDTOKEN_ADDRESS = "";/' w:/Projects/zkpay/scripts/paymaster-transaction.ts
+sed -i 's/const TOKEN_CONTRACT_ADDRESS = ".*";/const TOKEN_CONTRACT_ADDRESS = "";/' w:/Projects/zkpay/scripts/mint-token.ts
+
 # Optional: Clear hardhat cache
 print_status "Clearing Hardhat cache..."
 npx hardhat clean
 
-# Optional: Remove node_modules (uncomment if you want to do a full reset)
-# print_status "Removing node_modules (WARNING: This will require reinstalling dependencies)..."
-# rm -rf w:/Projects/zkpay/node_modules
-# rm -f w:/Projects/zkpay/package-lock.json
-
-print_status "Cleanup completed successfully!"
+print_status "Cleanup complete!"
