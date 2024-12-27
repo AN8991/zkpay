@@ -14,16 +14,21 @@ async function extractAddressesFromDeployLog() {
     const zkMessagesMatch = logContent.match(/zkMessages: (0x[a-fA-F0-9]{40})/);
     const zkMessagesAddress = zkMessagesMatch ? zkMessagesMatch[1] : null;
 
-    if (!fidTokenAddress || !zkMessagesAddress) {
+    // Extract wallet address
+    const walletMatch = logContent.match(/Wallet: (0x[a-fA-F0-9]{40})/);
+    const walletAddress = walletMatch ? walletMatch[1] : null;
+
+    if (!fidTokenAddress || !zkMessagesAddress || !walletAddress) {
       throw new Error('Could not find contract addresses in deploy.log');
     }
 
     // Update contract addresses
-    updateContractAddresses(fidTokenAddress, zkMessagesAddress);
+    updateContractAddresses(fidTokenAddress, zkMessagesAddress, walletAddress);
 
     log('update-addresses', `Updated addresses:
     - FidToken: ${fidTokenAddress}
-    - zkMessages: ${zkMessagesAddress}`);
+    - zkMessages: ${zkMessagesAddress}
+    - Wallet: ${walletAddress}`);
 
   } catch (error) {
     log('error', `Failed to update addresses: ${error instanceof Error ? error.message : String(error)}`);
